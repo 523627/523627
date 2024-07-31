@@ -1,5 +1,5 @@
 ## Hi there 👋
-## I'm currently learning Python, C++, Java, and advanced contest math. I have some knowledge of all three programming languages.
+## I'm currently learning Python, C++, Java, and contest math. I have some knowledge of all three programming languages.
 ## How to reach me: My AoPS username is "JCJC."
 ## Pronouns: they/them
 
