@@ -1,0 +1,286 @@
+import random
+import time
+import math
+
+file = open('petal_generator_save.txt', 'r')
+
+petals = {}
+petalList = ['air', 'amulet', 'ankh', 'antennae', 'basic', 'basil', 'battery', 'bone', 'bubble', 'bulb', 'bur',
+             'cactus', 'card', 'carrot', 'chip', 'claw', 'clover', 'coin', 'compass', 'corn', 'cotton', 'cutter',
+             'dahlia', 'dandelion', 'dice', 'disc', 'ant egg', 'beetle egg', 'fangs', 'faster', 'grapes', 'glass',
+             'heavy', 'honey', 'iris', 'jelly', 'leaf', 'light', 'lightning', 'lotus', 'magnet', 'mark', 'missile',
+             'moon', 'orange', 'pearl', 'peas', 'pincer', 'plank', 'pollen', 'poo', 'powder', 'privet', 'relic', 'rice',
+             'rock', 'root', 'rose', 'rubber', 'salt', 'sand', 'shell', 'shovel', 'soil', 'sponge', 'square',
+             'starfish', 'stick', 'stinger', 'blood stinger', 'talisman', 'third eye', 'tomato', 'uranium', 'web',
+             'wing', 'yggdrasil', 'yin yang', 'yucca']
+power_multipliers = [0, 2, 2, 0.3, 1, 5, 4, 4, 0.5, 2, 5,
+                     3, 3, 3, 4, 2, 0.5, 2, 0, 4, 4, 3,
+                     4, 0, 3, 0.2, 5, 5, 4, 3, 4, 3,
+                     2, 0.5, 5, 5, 4, 4, 4, 4, 5, 0, 4,
+                     8, 3, 2, 3, 5, 4, 3, 5, 1, 2, 2, 4,
+                     2, 4, 4, 4, 4, 4, 4, 2, 3, 4, 0,
+                     4, 4, 5, 5, 4, 6, 4, 4, 4,
+                     3, 6, 4, 5]
+rarities = ['common', 'unusual', 'rare', 'epic', 'legendary', 'mythic', 'ultra', 'super']
+reset = False
+
+
+def next(rarity):
+    return rarities[rarities.index(rarity) + 1]
+
+
+def previous(rarity):
+    return rarities[rarities.index(rarity) - 1]
+
+
+def craftChance(rarity):
+    return 1.28 * (0.5 ** rarities.index(rarity))
+
+
+def printLoot(list, petal):
+    for i in range(7):
+        if list[i] > 0 and i < 5:
+            print("You got " + str(list[i]) + " " + rarities[i] + " " + petal + ".")
+        elif list[i] > 0 and i == 5:
+            print("You got " + str(list[i]) + " mythic " + petal + "!!!")
+        elif list[i] > 0:
+            print("YOU GOT " + str(list[i]) + " ULTRA " + petal.upper() + "!!!")
+        petals[petal][rarities[i]] += list[i]
+
+
+# get the data from the file
+for i in range(79):
+    petal = {}
+    line = [int(x) for x in file.readline().split("/")]
+    for j in range(8):
+        petal[rarities[j]] = line[j]
+    petals[petalList[i]] = petal
+
+action = int(input("What would you like to do? You can craft, hunt mobs, equip petals, or reset the game. Enter 1 to "
+                   "craft, enter 2 to hunt mobs, enter 3 to equip petals, and enter 4 to reset the game. "))
+if action == 1:
+    petal = input(
+        "Which petal would you like to craft? Don't enter the rarity, only enter the name of the petal. ").lower()
+    for i in range(8):
+        print("You have " + str(petals[petal][rarities[i]]) + " " + rarities[i] + " " + petal + ".")
+    rarity = input(
+        "Which rarity of " + petal + " would you like to try to craft? Enter a rarity from Unusual to Super. ").lower()
+    if rarity in rarities[1:]:
+        if petals[petal][previous(rarity)] >= 5:
+            craft = True
+            crafted = 0
+            while craft:
+                if random.random() < craftChance(rarity):
+                    petals[petal][previous(rarity)] -= 5
+                    petals[petal][rarity] += 1
+                    crafted += 1
+                else:
+                    petals[petal][previous(rarity)] -= random.randint(1, 4)
+                if petals[petal][previous(rarity)] < 5:
+                    craft = False
+            if crafted > 0:
+                print("Congratulations! You successfully crafted " + str(crafted) + " " + rarity + " " + petal + ".")
+            else:
+                print("Sorry, you didn't manage to craft a " + rarity + " " + petal + ".")
+            print("You now have " + str(petals[petal][previous(rarity)]) + " " + previous(rarity) + " " + petal
+                  + " and " + str(petals[petal][rarity]) + " " + rarity + " " + petal + ".")
+        else:
+            print("You only have " + str(petals[petal][previous(rarity)]) + ". You need 5 to craft.")
+    else:
+        print("You can't craft that rarity!")
+
+if action == 2:
+    biome = input("Which biome would you like to explore? You may enter Garden, Desert, Ocean, Jungle, Hel, Sewers, "
+                  "or Ant Hell, but if you enter either of the last 2, it will take much longer. ")
+    seconds = float(input("How many seconds are you willing to wait for? "))
+    power = 0
+    for i in range(79):
+        for j in range(8):
+            if petals[petalList[i]][rarities[j]] > 0:
+                power += power_multipliers[i] * (3 ** j)
+    power = 1.5 * math.log2(power) + 5
+    if biome.lower() == "garden":
+        time.sleep(seconds)
+        x = math.log2(seconds + 1) * power
+        leaves = [random.randint(int(x // 20), int(x // 15)),
+                  random.randint(int(x // 10), int(x // 6)),
+                  random.randint(int(x // 40), int(x // 25)),
+                  random.randint(int(x // 70), int(x // 50)),
+                  random.randint(int(x // 500), int(x // 200)),
+                  random.randint(int(x // 1000), int(x // 450)),
+                  random.randint(int(x // 1500), int(x // 600))]
+        roses = [random.randint(int(x // 25), int(x // 15)),
+                 random.randint(int(x // 12), int(x // 7)),
+                 random.randint(int(x // 50), int(x // 30)),
+                 random.randint(int(x // 70), int(x // 50)),
+                 random.randint(int(x // 650), int(x // 250)),
+                 random.randint(int(x // 1200), int(x // 500)),
+                 random.randint(int(x // 1800), int(x // 700))]
+        corns = [random.randint(int(x // 35), int(x // 25)),
+                 random.randint(int(x // 15), int(x // 12)),
+                 random.randint(int(x // 55), int(x // 35)),
+                 random.randint(int(x // 75), int(x // 60)),
+                 random.randint(int(x // 800), int(x // 300)),
+                 random.randint(int(x // 1500), int(x // 600)),
+                 random.randint(int(x // 2000), int(x // 800))]
+        antennae = [0,
+                    0,
+                    random.randint(int(x // 800), int(x // 65)),
+                    random.randint(int(x // 1000), int(x // 55)),
+                    random.randint(int(x // 1500), int(x // 450)),
+                    random.randint(int(x // 2000), int(x // 750)),
+                    random.randint(int(x // 3500), int(x // 1400))
+                    ]
+        clover = [random.randint(int(x // 35), int(x // 25)),
+                  random.randint(int(x // 15), int(x // 12)),
+                  random.randint(int(x // 55), int(x // 35)),
+                  random.randint(int(x // 75), int(x // 60)),
+                  random.randint(int(x // 800), int(x // 300)),
+                  random.randint(int(x // 1500), int(x // 800)),
+                  random.randint(int(x // 2000), int(x // 1000))]
+        cutter = [random.randint(int(x // 80), int(x // 50)),
+                  random.randint(int(x // 200), int(x // 100)),
+                  random.randint(int(x // 500), int(x // 200)),
+                  random.randint(0, int(x // 500)),
+                  random.randint(0, int(x // 800)),
+                  random.randint(0, int(x // 1200)),
+                  random.randint(0, int(x // 1500))]
+        dandelions = [random.randint(int(x // 60), int(x // 30)),
+                      random.randint(int(x // 120), int(x // 50)),
+                      random.randint(int(x // 250), int(x // 100)),
+                      random.randint(0, int(x // 200)),
+                      random.randint(0, int(x // 500)),
+                      random.randint(0, int(x // 1000)),
+                      random.randint(0, int(x // 1500))]
+        fasters = [random.randint(int(x // 100), int(x // 15)),
+                   random.randint(int(x // 60), int(x // 7)),
+                   random.randint(int(x // 250), int(x // 30)),
+                   random.randint(int(x // 500), int(x // 50)),
+                   random.randint(int(x // 800), int(x // 200)),
+                   random.randint(int(x // 1500), int(x // 450)),
+                   random.randint(int(x // 2500), int(x // 650))]
+        lights = [random.randint(int(x // 90), int(x // 13)),
+                  random.randint(int(x // 55), int(x // 6)),
+                  random.randint(int(x // 200), int(x // 25)),
+                  random.randint(int(x // 400), int(x // 40)),
+                  random.randint(int(x // 650), int(x // 180)),
+                  random.randint(int(x // 800), int(x // 400)),
+                  random.randint(int(x // 1000), int(x // 600))]
+        missiles = [random.randint(int(x // 90), int(x // 13)),
+                    random.randint(int(x // 45), int(x // 6)),
+                    random.randint(int(x // 200), int(x // 25)),
+                    random.randint(int(x // 400), int(x // 40)),
+                    random.randint(int(x // 650), int(x // 250)),
+                    random.randint(int(x // 900), int(x // 600)),
+                    random.randint(int(x // 1200), int(x // 800))]
+        oranges = [random.randint(int(x // 90), int(x // 13)),
+                   random.randint(int(x // 45), int(x // 6)),
+                   random.randint(int(x // 200), int(x // 25)),
+                   random.randint(int(x // 400), int(x // 40)),
+                   random.randint(int(x // 650), int(x // 250)),
+                   random.randint(int(x // 900), int(x // 600)),
+                   random.randint(int(x // 1200), int(x // 800))]
+        peas = [random.randint(int(x // 25), int(x // 15)),
+                random.randint(int(x // 12), int(x // 7)),
+                random.randint(int(x // 50), int(x // 30)),
+                random.randint(int(x // 70), int(x // 50)),
+                random.randint(int(x // 650), int(x // 250)),
+                random.randint(int(x // 1200), int(x // 500)),
+                random.randint(int(x // 1800), int(x // 700))]
+        pollen = [random.randint(int(x // 60), int(x // 30)),
+                  random.randint(int(x // 120), int(x // 50)),
+                  random.randint(int(x // 250), int(x // 100)),
+                  random.randint(0, int(x // 200)),
+                  random.randint(0, int(x // 350)),
+                  random.randint(0, int(x // 600)),
+                  random.randint(0, int(x // 1000))]
+        rice = [random.randint(int(x // 25), int(x // 15)),
+                random.randint(int(x // 12), int(x // 7)),
+                random.randint(int(x // 50), int(x // 30)),
+                random.randint(int(x // 70), int(x // 50)),
+                random.randint(int(x // 650), int(x // 250)),
+                random.randint(int(x // 1200), int(x // 500)),
+                random.randint(int(x // 1800), int(x // 700))]
+        rocks = [random.randint(int(x // 50), int(x // 25)),
+                 random.randint(int(x // 100), int(x // 50)),
+                 random.randint(int(x // 300), int(x // 150)),
+                 random.randint(0, int(x // 350)),
+                 random.randint(0, int(x // 600)),
+                 random.randint(0, int(x // 900)),
+                 random.randint(0, int(x // 1300))]
+        moons = [0,
+                 0,
+                 0,
+                 0,
+                 0,
+                 0,
+                 random.randint(0, int(x // 2500))
+                 ]
+        stingers = [random.randint(int(x // 25), int(x // 15)),
+                    random.randint(int(x // 12), int(x // 7)),
+                    random.randint(int(x // 50), int(x // 30)),
+                    random.randint(int(x // 70), int(x // 50)),
+                    random.randint(int(x // 650), int(x // 250)),
+                    random.randint(int(x // 1200), int(x // 500)),
+                    random.randint(int(x // 1800), int(x // 700))]
+        printLoot(leaves, "leaf")
+        printLoot(lights, "light")
+        printLoot(stingers, "stinger")
+        printLoot(fasters, "faster")
+        printLoot(roses, "rose")
+        printLoot(peas, "peas")
+        printLoot(missiles, "missile")
+        printLoot(oranges, "orange")
+        printLoot(rice, "rice")
+        printLoot(rocks, "rock")
+        printLoot(corns, "corn")
+        printLoot(clover, "clover")
+        printLoot(pollen, "pollen")
+        printLoot(dandelions, "dandelion")
+        printLoot(antennae, "antennae")
+        printLoot(cutter, "cutter")
+        printLoot(moons, "moon")
+
+    elif biome.lower() == "desert":
+        pass
+
+    elif biome.lower() == "jungle":
+        pass
+
+    elif biome.lower() == "ocean":
+        pass
+
+    elif biome.lower() == "sewers":
+        pass
+
+    elif biome.lower() == "ant hell":
+        pass
+
+    else:
+        print("Invalid biome.")
+
+if action == 3:
+    pass
+
+if action == 4:
+    print("Resetting the game...")
+    time.sleep(2)
+    reset = True
+
+out = open('petal_generator_save.txt', 'w')
+
+if reset:
+    for i in range(4):
+        out.write("0/0/0/0/0/0/0/0\n")
+    out.write("5/0/0/0/0/0/0/0\n")
+    for i in range(74):
+        out.write("0/0/0/0/0/0/0/0\n")
+else:
+    for i in range(79):
+        line = ""
+        for j in range(8):
+            line += str(petals[petalList[i]][rarities[j]])
+            if j < 7:
+                line += "/"
+        line += "\n"
+        out.write(line)
