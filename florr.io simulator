@@ -14,13 +14,21 @@ petalList = ['air', 'amulet', 'ankh', 'antennae', 'basic', 'basil', 'battery', '
              'starfish', 'stick', 'stinger', 'blood stinger', 'talisman', 'third eye', 'tomato', 'uranium', 'web',
              'wing', 'yggdrasil', 'yin yang', 'yucca']
 power_multipliers = [0, 2, 2, 0.3, 1, 5, 4, 4, 0.5, 2, 5,
-                     3, 3, 3, 4, 2, 0.5, 2, 0, 4, 4, 3,
+                     3, 3, 3, 4, 2, 1, 2, 0, 4, 4, 3,
                      4, 0, 3, 0.2, 5, 5, 4, 3, 4, 3,
                      2, 0.5, 5, 5, 4, 4, 4, 4, 5, 0, 4,
                      8, 3, 2, 3, 5, 4, 3, 5, 1, 2, 2, 4,
                      2, 4, 4, 4, 4, 4, 4, 2, 3, 4, 0,
-                     4, 4, 5, 5, 4, 6, 4, 4, 4,
+                     4, 4, 5, 5, 4, 7, 4, 4, 4,
                      3, 6, 4, 5]
+speed_multipliers = [-5, 0.5, -3, 0.5, 0.5, 2, 1.5, 1.5, 8, -5, 1,
+                     1, 1, 1, 1.5, 1.5, 0.5, 0.5, 0, 1.5, 2, 1.5,
+                     2, 0, 1.5, 1, 2, 2, 2, 1, 1.5, 0.5,
+                     0.5, -5, 2, 2.5, 2, 2, 2, 2, 0, 0, 1.5,
+                     6, 1.5, 0.5, 1.5, 2, 1.5, 1, 3, 12, 0, 0, 1.5,
+                     0.5, 2, 2, 2, 2, 2, 2, 2, 1, 1.5, 0,
+                     2, 2, 2, 1.5, 1.5, 6, 1.5, 1.5, 2,
+                     2, 6, 0.5, 2]
 rarities = ['common', 'unusual', 'rare', 'epic', 'legendary', 'mythic', 'ultra', 'super']
 reset = False
 
@@ -92,16 +100,24 @@ if action == 1:
 if action == 2:
     biome = input("Which biome would you like to explore? You may enter Garden, Desert, Ocean, Jungle, Hel, Sewers, "
                   "or Ant Hell, but if you enter either of the last 2, it will take much longer. ")
-    seconds = float(input("How many seconds are you willing to wait for? "))
+    seconds = float(input("How many seconds are you willing to wait for? (Bubbles and Powder will speed this up. "))
     power = 0
+    speed = 0
     for i in range(79):
         for j in range(8):
             if petals[petalList[i]][rarities[j]] > 0:
                 power += power_multipliers[i] * (3 ** j)
+                if petalList[i] == "bubble":
+                    speed += petals[petalList[i]][rarities[j]] * speed_multipliers[i] * (3 ** j)
+                elif petalList[i] == "powder":
+                    speed += power_multipliers[i] * (4 ** j)
+                else:
+                    speed += power_multipliers[i] * (2 ** j)
     power = 1.5 * math.log2(power) + 5
+    speed = max(math.log2(speed) / 3, 1)
+    time.sleep(seconds / speed)
+    x = math.log2(seconds + 1) * power
     if biome.lower() == "garden":
-        time.sleep(seconds)
-        x = math.log2(seconds + 1) * power
         leaves = [random.randint(int(x // 20), int(x // 15)),
                   random.randint(int(x // 10), int(x // 6)),
                   random.randint(int(x // 40), int(x // 25)),
