@@ -250,6 +250,9 @@ if action == 2:
     elif biome.lower() == "ocean":
         pass
 
+    elif biome.lower() == "hel":
+        pass
+
     elif biome.lower() == "sewers":
         pass
 
