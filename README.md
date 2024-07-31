@@ -1,4 +1,7 @@
 ## Hi there 👋
+## I'm currently learning Python, C++, and Java. I have some knowledge of all three languages.
+## How to reach me: My AoPS username is "JCJC."
+## Pronouns: they/them
 
 <!--
 **523627/523627** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
