@@ -100,7 +100,7 @@ if action == 1:
 if action == 2:
     biome = input("Which biome would you like to explore? You may enter Garden, Desert, Ocean, Jungle, Hel, Sewers, "
                   "or Ant Hell, but if you enter either of the last 2, it will take much longer. ")
-    seconds = float(input("How many seconds are you willing to wait for? (Bubbles and Powder will speed this up. "))
+    seconds = float(input("How many seconds are you willing to wait for? (Bubbles and Powder will speed this up.) "))
     power = 0
     speed = 0
     for i in range(79):
