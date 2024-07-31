@@ -2,7 +2,7 @@ import random
 import time
 import math
 
-file = open('petal_generator_save.txt', 'r')
+file = open('florrio_simulator_save.txt', 'r')
 
 petals = {}
 petalList = ['air', 'amulet', 'ankh', 'antennae', 'basic', 'basil', 'battery', 'bone', 'bubble', 'bulb', 'bur',
@@ -267,7 +267,7 @@ if action == 4:
     time.sleep(2)
     reset = True
 
-out = open('petal_generator_save.txt', 'w')
+out = open('florrio_simulator_save.txt', 'w')
 
 if reset:
     for i in range(4):
