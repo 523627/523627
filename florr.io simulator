@@ -5,6 +5,7 @@ import math
 file = open('florrio_simulator_save.txt', 'r')
 
 petals = {}
+biomeChanged = False
 petalList = ['air', 'amulet', 'ankh', 'antennae', 'basic', 'basil', 'battery', 'bone', 'bubble', 'bulb', 'bur',
              'cactus', 'card', 'carrot', 'chip', 'claw', 'clover', 'coin', 'compass', 'corn', 'cotton', 'cutter',
              'dahlia', 'dandelion', 'dice', 'disc', 'ant egg', 'beetle egg', 'fangs', 'faster', 'grapes', 'glass',
@@ -64,6 +65,8 @@ for i in range(79):
         petal[rarities[j]] = line[j]
     petals[petalList[i]] = petal
 
+previousBiome = file.readline()
+
 action = int(input("What would you like to do? You can craft, hunt mobs, equip petals, or reset the game. Enter 1 to "
                    "craft, enter 2 to hunt mobs, enter 3 to equip petals, and enter 4 to reset the game. "))
 if action == 1:
@@ -73,6 +76,9 @@ if action == 1:
         print("You have " + str(petals[petal][rarities[i]]) + " " + rarities[i] + " " + petal + ".")
     rarity = input(
         "Which rarity of " + petal + " would you like to try to craft? Enter a rarity from Unusual to Super. ").lower()
+    for i in rarities:
+        if i[0] == rarities[0]:
+            rarity = i
     if rarity in rarities[1:]:
         if petals[petal][previous(rarity)] >= 5:
             craft = True
@@ -93,13 +99,15 @@ if action == 1:
             print("You now have " + str(petals[petal][previous(rarity)]) + " " + previous(rarity) + " " + petal
                   + " and " + str(petals[petal][rarity]) + " " + rarity + " " + petal + ".")
         else:
-            print("You only have " + str(petals[petal][previous(rarity)]) + ". You need 5 to craft.")
+            print("You only have " + str(petals[petal][previous(rarity)]) + " " + str(previous(rarity)) + " " + petal +
+                  ". You need 5 to craft a " + rarity + ".")
     else:
         print("You can't craft that rarity!")
 
 if action == 2:
     biome = input("Which biome would you like to explore? You may enter Garden, Desert, Ocean, Jungle, Hel, Sewers, "
-                  "or Ant Hell, but if you enter either of the last 2, it will take much longer. ")
+                  "Ant Hell, Fire Ant Hell, or Termite Ant Hell, but if you enter any of the last 4, it will take "
+                  "much longer unless you were in that biome in the last run. ")
     seconds = float(input("How many seconds are you willing to wait for? (Bubbles and Powder will speed this up.) "))
     power = 0
     speed = 0
@@ -273,10 +281,59 @@ if action == 2:
         pass
 
     elif biome.lower() == "ant hell":
-        pass
-
+        if previousBiome == "ant hell":
+            pass
+        elif previousBiome == "termite ant hell":
+            time.sleep(20 / speed)
+        elif previousBiome == "fire ant hell":
+            time.sleep(30 / speed)
+        else:
+            time.sleep(50 / speed)
+        leaves = [random.randint(int(x // 60), int(x // 30)),
+                  random.randint(int(x // 40), int(x // 25)),
+                  random.randint(int(x // 250), int(x // 40)) if x > 250 else random.randint(0, int(x // 60)),
+                  random.randint(0, int(x // 100)) if x > 350 else random.randint(0, random.randint(0, int(x // 100))),
+                  random.randint(0, int(x // 250)) if x > 500 else 0,
+                  random.randint(0, int(x // 600)) if x > 1200 else 0,
+                  random.randint(0, int(x // 1000)) if x > 1600 else 0]
+        corns = [random.randint(int(x // 35), int(x // 25)),
+                 random.randint(int(x // 15), int(x // 12)),
+                 random.randint(int(x // 55), int(x // 35)),
+                 random.randint(int(x // 75), int(x // 60)),
+                 random.randint(int(x // 800), int(x // 300)) if x > 500 else 0,
+                 random.randint(int(x // 1500), int(x // 600)) if x > 1100 else 0,
+                 random.randint(int(x // 2500), int(x // 800)) if x > 1600 else 0]
+        clover = [random.randint(int(x // 20), int(x // 15)),
+                 random.randint(int(x // 7), int(x // 4)),
+                 random.randint(int(x // 35), int(x // 20)),
+                 random.randint(int(x // 75), int(x // 40)) if x > 250 else random.randint(0, int(x // 60)),
+                 random.randint(int(x // 600), int(x // 200)) if x > 500 else 0,
+                 random.randint(int(x // 1000), int(x // 400)) if x > 1100 else 0,
+                 random.randint(int(x // 2500), int(x // 800)) if x > 1600 else 0]
+        lights = [random.randint(int(x // 15), int(x // 10)),
+                 random.randint(int(x // 4), int(x // 2)) if x > 10 else 0,
+                 random.randint(int(x // 25), int(x // 15)) if x > 100 else random.randint(int(x // 40), int(x // 30)),
+                 random.randint(int(x // 50), int(x // 30)) if x > 250 else random.randint(0, int(x // 60)),
+                 random.randint(int(x // 400), int(x // 200)) if x > 500 else 0,
+                 random.randint(int(x // 1200), int(x // 300)) if x > 1100 else 0,
+                 random.randint(int(x // 2500), int(x // 600)) if x > 1600 else 0]
+        rice = [random.randint(int(x // 25), int(x // 15)),
+                random.randint(int(x // 12), int(x // 7)),
+                random.randint(int(x // 50), int(x // 30)),
+                random.randint(int(x // 70), int(x // 50)),
+                random.randint(int(x // 650), int(x // 250)),
+                random.randint(int(x // 1200), int(x // 500)),
+                random.randint(int(x // 1800), int(x // 700))]
+        printLoot(leaves, "leaf")
+        printLoot(lights, "light")
+        printLoot(rice, "rice")
+        printLoot(corns, "corn")
+        printLoot(clover, "clover")
     else:
         print("Invalid biome.")
+        biome = "garden"
+    if biome != previousBiome:
+        biomeChanged = True
 
 if action == 3:
     pass
@@ -294,6 +351,7 @@ if reset:
     out.write("5/0/0/0/0/0/0/0\n")
     for i in range(74):
         out.write("0/0/0/0/0/0/0/0\n")
+    out.write("garden\n")
 else:
     for i in range(79):
         line = ""
@@ -303,3 +361,7 @@ else:
                 line += "/"
         line += "\n"
         out.write(line)
+    if biomeChanged:
+        out.write(biome.lower() + "\n")
+    else:
+        out.write(previousBiome + "\n")
