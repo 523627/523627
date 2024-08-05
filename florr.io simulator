@@ -65,7 +65,7 @@ for i in range(79):
         petal[rarities[j]] = line[j]
     petals[petalList[i]] = petal
 
-previousBiome = file.readline()
+previousBiome = file.readline().strip()
 
 action = int(input("What would you like to do? You can craft, hunt mobs, equip petals, or reset the game. Enter 1 to "
                    "craft, enter 2 to hunt mobs, enter 3 to equip petals, and enter 4 to reset the game. "))
