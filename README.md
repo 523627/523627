@@ -1,7 +1,6 @@
 ## Hi there 👋
-## I'm currently learning Python, C++, Java, and contest math. I have some knowledge of all three programming languages.
-## How to reach me: My AoPS username is "JCJC."
-## Pronouns: they/them
+# I'm currently learning Python, C++, Java, and contest math. I have some knowledge of all three programming languages.
+# Pronouns: they/them
 
 <!--
 **523627/523627** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
