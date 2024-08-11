@@ -1,3 +1,5 @@
+# This is supposed to be a python file. To run it, paste this code into any python compiler.
+
 import time
 import random
 
