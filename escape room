@@ -268,12 +268,13 @@ while not (key1 and key2 and key3 and key4 and key5 and room == 25):
     elif room == 32:
         break
     elif room == 31:
+		room31turns = 0
         time.sleep(0.5)
         print("What is this place?!")
         time.sleep(1)
         print("You see some fire at the other side...")
         time.sleep(1)
-        print("and there are some frozen things here for some reason.")
+        print("There are some frozen things here for some reason.")
         time.sleep(1)
         d = input("This place is so weird! Are you sure you want to stay? ")
         if d.lower() == "yes":
